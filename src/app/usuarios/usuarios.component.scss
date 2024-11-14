@@ -88,3 +88,9 @@
     }
   }
 }
+/* Modal Styles */
+
+.modal.is-active {
+  display: block;  /* Hace que el modal se vea cuando la clase 'is-active' está aplicada */
+}
+

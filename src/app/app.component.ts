@@ -13,6 +13,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogModule } from '@angular/material/dialog';
 import {CrearUserComponent} from './modal/crear-user/crear-user.component';
 
+import { NgModule } from '@angular/core';
+
+
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms'; // Importar FormsModule
 

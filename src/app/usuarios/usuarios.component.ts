@@ -1,23 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserService } from '../service/user.service'; // Ajusta la ruta si es necesario
-
-interface Usuario {
-  id: number;
-  nombre: string;
-  email: string;
-}
+import { FormsModule } from '@angular/forms'; // Importar FormsModule
 
 @Component({
   selector: 'app-usuarios',
   templateUrl: './usuarios.component.html',
-  standalone: true,
   styleUrls: ['./usuarios.component.scss'],
-  imports: []
+  standalone: true,
+  imports: [FormsModule] // Añade FormsModule aquí
 })
-export class UsuariosComponent {
-  usuarios: Usuario[] = [];
-  modalActivo: boolean = false;  // Estado del modal
-  usuarioEdicion: Usuario = { id: 0, nombre: '', apellido: '', departamento: '', cargo: '', email: '' }; // Usuario para editar
+export class UsuariosComponent implements OnInit {
+  usuarios: any[] = [];
+  modalActivo: boolean = false;
+  esEdicion: boolean = false;  // Bandera para saber si es creación o edición
+  usuarioEdicion: any = { nombre: '', apellido: '', departamento: '', cargo: '', email: '' }; // Datos del usuario
 
   constructor(private userService: UserService) {}
 
@@ -36,11 +32,20 @@ export class UsuariosComponent {
     );
   }
 
-  agregarUsuario(nombre: string, apellido: string, departamento: string, cargo: string, email: string): void {
-    const nuevoUsuario = { nombre, apellido, departamento, cargo, email };
+  // Método para abrir el modal en modo creación
+  abrirModalCrear(): void {
+    this.usuarioEdicion = { nombre: '', apellido: '', departamento: '', cargo: '', email: '' };  // Reinicia los campos
+    this.esEdicion = false;  // Establece que estamos en modo creación
+    this.modalActivo = true;  // Muestra el modal
+  }
+
+  // Método para agregar un nuevo usuario
+  agregarUsuario(): void {
+    const nuevoUsuario = { ...this.usuarioEdicion };  // Usa los datos del formulario
     this.userService.createUser(nuevoUsuario).subscribe(
       (usuario) => {
         this.usuarios.push(usuario);  // Agrega el nuevo usuario a la lista
+        this.cerrarModal();  // Cierra el modal
       },
       (error) => {
         console.error('Error al agregar usuario:', error);
@@ -48,6 +53,38 @@ export class UsuariosComponent {
     );
   }
 
+  // Método para abrir el modal en modo edición
+  editarUsuario(id: number): void {
+    const usuario = this.usuarios.find(u => u.id === id);
+    if (usuario) {
+      this.usuarioEdicion = { ...usuario };  // Copia los datos del usuario a editar
+      this.esEdicion = true;  // Establece que estamos en modo edición
+      this.modalActivo = true;  // Muestra el modal
+    }
+  }
+
+  // Método para guardar los cambios de edición
+  guardarEdicion(): void {
+    this.userService.updateUser(this.usuarioEdicion.id, this.usuarioEdicion).subscribe(
+      (usuarioActualizado) => {
+        const index = this.usuarios.findIndex(u => u.id === usuarioActualizado.id);
+        if (index !== -1) {
+          this.usuarios[index] = usuarioActualizado;  // Actualiza el usuario en la lista
+        }
+        this.cerrarModal();  // Cierra el modal
+      },
+      (error) => {
+        console.error('Error al guardar los cambios:', error);
+      }
+    );
+  }
+
+  // Método para cerrar el modal
+  cerrarModal(): void {
+    this.modalActivo = false;  // Oculta el modal
+  }
+
+  // Método para eliminar un usuario
   eliminarUsuario(id: number): void {
     this.userService.deleteUser(id).subscribe(
       () => {
@@ -57,32 +94,5 @@ export class UsuariosComponent {
         console.error('Error al eliminar usuario:', error);
       }
     );
-  }
-
-  editarUsuario(id: number): void {
-    const usuario = this.usuarios.find(u => u.id === id);
-    if (usuario) {
-      this.usuarioEdicion = { ...usuario }; // Cargar datos del usuario a editar
-      this.modalActivo = true;  // Abrir el modal
-    }
-  }
-
-  guardarEdicion(): void {
-    this.userService.updateUser(this.usuarioEdicion.id, this.usuarioEdicion).subscribe(
-      (usuarioActualizado) => {
-        const index = this.usuarios.findIndex(u => u.id === this.usuarioEdicion.id);
-        if (index !== -1) {
-          this.usuarios[index] = usuarioActualizado;  // Actualiza el usuario en la lista
-        }
-        this.cerrarModal();  // Cerrar el modal
-      },
-      (error) => {
-        console.error('Error al guardar los cambios:', error);
-      }
-    );
-  }
-
-  cerrarModal(): void {
-    this.modalActivo = false;  // Cerrar el modal
   }
 }
