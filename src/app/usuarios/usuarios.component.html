@@ -1,15 +1,26 @@
 <div class="usuarios-container">
   <h2>Gestión de Usuarios</h2>
+
+  <!-- Formulario para agregar un nuevo usuario -->
   <div class="formulario">
     <input #nombre type="text" placeholder="Nombre" />
+    <input #apellido type="text" placeholder="Apellido" />
+    <input #departamento type="text" placeholder="Departamento" />
+    <input #cargo type="text" placeholder="Cargo" />
     <input #email type="email" placeholder="Email" />
-    <button (click)="agregarUsuario(nombre.value, email.value)">Agregar Usuario</button>
+    <button (click)="agregarUsuario(nombre.value, apellido.value, departamento.value, cargo.value, email.value)">
+      Agregar Usuario
+    </button>
   </div>
 
+  <!-- Tabla para mostrar los usuarios -->
   <table class="usuarios-table">
     <thead>
       <tr>
         <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Departamento</th>
+        <th>Cargo</th>
         <th>Email</th>
         <th>Acciones</th>
       </tr>
@@ -17,9 +28,45 @@
     <tbody>
       <tr *ngFor="let usuario of usuarios">
         <td>{{ usuario.nombre }}</td>
+        <td>{{ usuario.apellido }}</td>
+        <td>{{ usuario.departamento }}</td>
+        <td>{{ usuario.cargo }}</td>
         <td>{{ usuario.email }}</td>
-        <td><button (click)="eliminarUsuario(usuario.id)">Eliminar</button></td>
+        <td>
+          <!-- Botones para editar y eliminar -->
+          <button (click)="editarUsuario(usuario.id)">Editar</button>
+          <button (click)="eliminarUsuario(usuario.id)">Eliminar</button>
+        </td>
       </tr>
     </tbody>
   </table>
+
+  <!-- Modal para editar usuario -->
+  <div class="modal" [ngClass]="{'is-active': modalActivo}">
+    <div class="modal-background" (click)="cerrarModal()"></div>
+    <div class="modal-content">
+      <h3>Editar Usuario</h3>
+      <form (ngSubmit)="guardarEdicion()">
+        <label for="nombre">Nombre:</label>
+        <input [(ngModel)]="usuarioEdicion.nombre" name="nombre" id="nombre" required />
+
+        <label for="apellido">Apellido:</label>
+        <input [(ngModel)]="usuarioEdicion.apellido" name="apellido" id="apellido" required />
+
+        <label for="departamento">Departamento:</label>
+        <input [(ngModel)]="usuarioEdicion.departamento" name="departamento" id="departamento" required />
+
+        <label for="cargo">Cargo:</label>
+        <input [(ngModel)]="usuarioEdicion.cargo" name="cargo" id="cargo" required />
+
+        <label for="email">Email:</label>
+        <input [(ngModel)]="usuarioEdicion.email" name="email" id="email" required type="email" />
+
+        <div class="modal-footer">
+          <button type="button" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
