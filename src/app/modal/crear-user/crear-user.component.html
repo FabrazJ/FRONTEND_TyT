@@ -1,1 +1,62 @@
-<p>crear-user works!</p>
+<div class="form-container">
+  <h2>Crear Usuario</h2>
+  <form #createUserForm="ngForm">
+    <!-- Departamento -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Departamento</mat-label>
+      <mat-select [(ngModel)]="user.department" name="department" required>
+        <mat-option *ngFor="let dept of departments" [value]="dept">{{ dept }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Cargo -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Cargo</mat-label>
+      <mat-select [(ngModel)]="user.role" name="role" required>
+        <mat-option *ngFor="let role of roles" [value]="role">{{ role }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Usuario -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Usuario</mat-label>
+      <input matInput [(ngModel)]="user.username" name="username" required />
+    </mat-form-field>
+
+    <!-- Email -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Email</mat-label>
+      <input matInput [(ngModel)]="user.email" name="email" required />
+    </mat-form-field>
+
+    <!-- Primer nombre -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Primer nombre</mat-label>
+      <input matInput [(ngModel)]="user.firstName" name="firstName" required />
+    </mat-form-field>
+
+    <!-- Segundo nombre -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Segundo nombre</mat-label>
+      <input matInput [(ngModel)]="user.secondName" name="secondName" />
+    </mat-form-field>
+
+    <!-- Primer apellido -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Primer apellido</mat-label>
+      <input matInput [(ngModel)]="user.firstLastName" name="firstLastName" required />
+    </mat-form-field>
+
+    <!-- Segundo apellido -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Segundo apellido</mat-label>
+      <input matInput [(ngModel)]="user.secondLastName" name="secondLastName" />
+    </mat-form-field>
+
+    <!-- Botones -->
+    <div class="buttons">
+      <button mat-raised-button color="primary" (click)="onCreate()">Crear</button>
+      <button mat-raised-button color="warn" (click)="onCancel()">Cancelar</button>
+    </div>
+  </form>
+</div>
